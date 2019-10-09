@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Bitly App</title>
+    <link rel="icon" href="public/img/favicon.png" type="image/gif" sizes="16x16">
+    <link rel="stylesheet" href="public/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" href="public/css/app.css" />
+    <script type="text/javascript" src="public/jquery/jquery.js"></script>
+    <script type="text/javascript" src="public/clipboard/clipboard.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            var btn = $('#btnCreate');
+            var resultCard = $('#result');
+            var errorCard = $('#error');
+
+            //handle enable/disable of inputs
+            var toggleProgress = function (mode) {
+                btn[0].childNodes[2].nodeValue = mode ? " Creating..." : "Create";
+                btn.find("#spinner")[mode ? "removeClass" : "addClass"]("hidden");
+                btn.prop("disabled", mode);
+                $("#inpURL").prop("disabled", mode);
+            }
+
+            $("#frmShorten").on("submit", function (ev) {
+
+                //prevent default behavior of form
+                ev.preventDefault();
+
+                //reset
+                resultCard.addClass("hidden");
+                errorCard.addClass("hidden");
+
+                //submit data to server
+                $.post("api/shorten", $(this).serialize())
+                    .then(function (result) {
+                        //if successful
+                        var btnClipboard = $("button.btn-clipboard");
+                        var shortURL = result.data.url;
+
+                        btnClipboard[0].setAttribute("data-clipboard-text", shortURL);
+                        new ClipboardJS(btnClipboard[0]);
+
+                        resultCard.find("#result-url").html(shortURL);
+                        resultCard.removeClass("hidden");
+
+                    }).fail(function (error) {
+                        //if failed or error occured
+                        var err = error.responseJSON;
+                        errorCard.removeClass("hidden");
+
+                        if (err && err.status_txt) {
+                            errorCard.find(".alert").html(err.status_txt);
+                        } else {
+                            errorCard.find(".alert").html("Something went wrong!");
+                            console.error(error);
+                        }
+                    }).always(function () {
+                        toggleProgress(false);
+                    });
+
+                toggleProgress(true);
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col col-lg-8">
+                <h1 class="display-4 text-center adjust-margin">Bitly App</h1>
+                <div class="card shadow-lg">
+                    <div class="card-body">
+                        <h4>Create Bitlink</h4>
+                        <form id="frmShorten" action="/shorten" method="POST">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="lblURL">URL</span>
+                                </div>
+                                <input id='inpURL' name='url' type="text" class="form-control"
+                                    placeholder="Paste long URL" aria-label="Long URL" aria-describedby="lblURL"
+                                    autocomplete='off' required>
+
+                                <div class="input-group-append">
+                                    <button class="btn btn-secondary" type="submit" id="btnCreate">
+                                        <span id="spinner" class="spinner-border spinner-border-sm hidden" role="status"
+                                            aria-hidden="true"></span>
+                                        Create
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <div id="result" class="result hidden">
+                            <h6>Result</h6>
+                            <button type="button" class="btn-clipboard" title="Copy to clipboard">Copy</button>
+                            <div class="alert alert-secondary" role="alert">
+                                <code id='result-url'>
+                                </code>
+                            </div>
+                        </div>
+                        <div id="error" class="error hidden">
+                            <h6>Error</h6>
+                            <div class="alert alert-danger" role="alert">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

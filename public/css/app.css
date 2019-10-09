@@ -1,0 +1,32 @@
+.container {
+    margin-top: 60px;
+}
+
+.adjust-margin {
+    margin-bottom: 50px;
+}
+
+.hidden {
+    display: none;
+}
+.result{
+    position: relative;
+}
+.btn-clipboard {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10;
+    display: block;
+    padding: .25rem .5rem;
+    font-size: 75%;
+    color: #818a91;
+    background-color: transparent;
+    border: 0;
+    border-radius: .25rem;
+}
+
+.btn-clipboard:hover {
+    color: white;
+    background-color: #027de7;
+}
