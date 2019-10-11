@@ -1,4 +1,4 @@
-export const bitlyToken = "916bbaa8b538e16a173d86fb6f9fcc238278184b";
+export const bitlyToken = "a6297a4d7612240fbbe8601e5ad64cfb977c7690";
 
 export const APIOptions = {
     apiUrl: "api-ssl.bitly.com",

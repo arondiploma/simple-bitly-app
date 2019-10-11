@@ -24,7 +24,7 @@ export default function (props) {
     });
 
     //main html
-    app.get("/", (req, res) => res.sendFile(path.join(__dirname + "/index.html")));
+    app.get("/", (req, res) => res.sendFile(path.join(__dirname + "/public/index.html")));
 
     //api endpoint
     //receive a long URL and utilize the bitly API to return a short URL
