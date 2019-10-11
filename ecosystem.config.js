@@ -3,7 +3,7 @@ module.exports = {
     apps: [
         {
             name: "bitly",
-            script: "server",
+            script: "npm start",
             env: {
                 "NODE_ENV": "production",
                 "PORT": 81,
